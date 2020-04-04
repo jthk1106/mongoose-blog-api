@@ -14,10 +14,11 @@ router.get('/:id', (req, res) => {
     User
         .findById(req.params.id)
         .then(user => {
-            res.status(200).json(user)
+            !user ? res.status(404).json(user) : res.status(200).json(user)
         })
         .catch(err => {
-            res.status(404).send('user not found')
+            console.log('err: ', err)
+            res.status(404).send('something went wrong...')
         })
 })
 
@@ -30,7 +31,7 @@ router.post('/', (req, res) => {
     //the new User is saved to mongodb with the 'save' method
     newUser.save()
         .then(user => {
-            res.status(201).send(`new user ${user} saved to database`)
+            res.status(201).json(user)
         })
         .catch(err => {
             res.status(400).send('unable to save to database')
@@ -42,7 +43,7 @@ router.put('/:id', (req, res) => {
     User
         .findByIdAndUpdate(req.params.id, req.body)
         .then(data => {
-            res.status(204).send(`updated user with ${req.body}`)
+            res.status(204).json(data)
         })
         .catch(err => {
             res.status(400).send('could not update')
@@ -54,11 +55,11 @@ router.delete('/:id', (req, res) => {
     User
         .findByIdAndRemove(req.params.id)
         .then(deleted => {
-            res.send(`deleted user id: ${req.params.id}`)
+            res.json(deleted)
         })
         .catch(err => {
-            res.status(400).send('something went wrong')
             console.log('error msg: ', err)
+            res.status(400).send('something went wrong')
         })
 })
 

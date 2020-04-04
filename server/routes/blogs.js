@@ -23,7 +23,7 @@ router.get('/featured', (req, res) => {
         .equals(true)
         .then(blogs => {
             console.log('blogs: ', blogs)
-            res.status(200).send('find featured blogs success')
+            res.status(200).json(blogs)
         })
         .catch(err => {
             console.log('err: ', err)
@@ -34,7 +34,7 @@ router.get('/:id', (req, res) => {
     Blog
         .findById(req.params.id)
         .then(idBlog => {
-            res.status(200).send(`find blog by id success: ${idBlog}`)
+            !idBlog ? res.status(404).json(idBlog) : res.status(200).json(idBlog)
         })
         .catch(err => {
             console.log('err: ', err)
@@ -104,7 +104,7 @@ router.put('/:id', (req, res) => {
     Blog
         .findByIdAndUpdate(req.params.id, req.body)
         .then(data => {
-            res.status(204).send(`updated blog with ${req.body}`)
+            res.status(204).json(data)
         })
         .catch(err => {
             res.status(400).send('could not update')
@@ -117,9 +117,9 @@ router.delete('/', (req, res) => {
         .deleteMany({ featured: false }, (err, result) => {
             if(err) {
                 res.status(400).send(err);
-              } else {
+            } else {
                 res.status(200).send(result);
-              }
+            }
         })
 })
 
@@ -127,7 +127,7 @@ router.delete('/:id', (req, res) => {
     Blog
         .findByIdAndRemove(req.params.id)
         .then(deleted => {
-            res.send(`deleted user id: ${req.params.id}`)
+            res.json(deleted)
         })
         .catch(err => {
             res.status(400).send('something went wrong')
